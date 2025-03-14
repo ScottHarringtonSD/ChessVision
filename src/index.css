@@ -34,3 +34,14 @@ code {
   right: 0px;
   bottom: 0px;
 }
+
+.particles-bg {
+  position: absolute;
+  z-index: -1;
+  top: 0px !important;
+  left: 0px !important;
+  right: 0px !important;
+  bottom: 0px !important;
+  padding: 0px;
+  margin: 0px;
+}
