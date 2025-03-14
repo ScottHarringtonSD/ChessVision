@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -49,3 +50,7 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 # ChessVision
 The blindfold chess training website
 >>>>>>> 1da1a74 (Initial commit)
+=======
+# ChessVision
+The blindfold chess training website
+>>>>>>> 1da1a746cf15410b051ca5ee7c9002aed2343ab3
