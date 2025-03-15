@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./App.css";
+import "../App.css";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
 import type { Container, Engine } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
@@ -25,8 +25,8 @@ function HomePage() {
     <div className=" w-full absolute ">
       <div className=" max-w-4xl mx-auto flex justify-center p-6 pt-10 items-center mt-10">
         <div className="text-center">
-          <h1 className="text-8xl text-emerald-50">Chess Vision</h1>
-          <p className="text-3xl text-emerald-50 p-2">
+          <h1 className="text-9xl text-emerald-50">Chess Vision</h1>
+          <p className="text-4xl text-emerald-50 p-2">
             The blindfold chess training Mecca
           </p>
         </div>
@@ -78,20 +78,24 @@ function HomePage() {
                 width: 3,
               },
               move: {
-                direction: "none",
+                direction: "bottom",
                 enable: true,
                 outModes: {
-                  default: "bounce",
+                  default: "out",
                 },
-                random: true,
-                speed: 0.5,
+                random: false,
+                speed: 0.8,
                 straight: false,
+                angle: {
+                  offset: 0,
+                  value: 90,
+                },
               },
               number: {
                 density: {
                   enable: false,
                 },
-                value: 50,
+                value: 40,
               },
               opacity: {
                 value: 0.9,

@@ -7,7 +7,8 @@ import {
   Route,
   NavLink,
 } from "react-router-dom";
-import HomePage from "./HomePage";
+import HomePage from "./pages/HomePage";
+import PlayEnginePage from "./pages/PlayEnginePage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
         <div>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/PlayEngine" element={<PlayEnginePage />} />
           </Routes>
         </div>
       </div>
