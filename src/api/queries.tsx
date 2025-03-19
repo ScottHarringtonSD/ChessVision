@@ -53,10 +53,11 @@ const postChessApi = async (data = {}) => {
     },
     body: JSON.stringify(data),
   })
-    .then(delay(600))
     .then(checkStatus)
     .then(parseJSON)
     .then(convertToStockfishResponseModel);
+
+  return response;
 };
 
 export { postChessApi };
