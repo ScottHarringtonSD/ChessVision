@@ -4,6 +4,7 @@ import { StockfishResponse } from "../../api/StockfishResponse";
 import { text } from "stream/consumers";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
+import { getRandomInt, shuffle } from "./helper";
 
 export type PlayerInterfaceProps = {
   difficulty: string;
@@ -19,36 +20,7 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
   const [error, setError] = useState("");
   const [showBoard, setShowBoard] = useState(false);
   const [moveOptionList, setMoveOptionList] = useState<string[]>();
-
-  function getRandomInt(min: number, max: number) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  function shuffle(array: string[]) {
-    let currentIndex = array.length;
-
-    // While there remain elements to shuffle...
-    while (currentIndex != 0) {
-      // Pick a remaining element...
-      let randomIndex = Math.floor(Math.random() * currentIndex);
-      currentIndex--;
-
-      // And swap it with the current element.
-      [array[currentIndex], array[randomIndex]] = [
-        array[randomIndex],
-        array[currentIndex],
-      ];
-    }
-
-    return array;
-  }
-
-  function getArraySectionEasy(arr: string[]) {
-    const halfLength = Math.ceil(arr.length / 1.7);
-    return arr.filter((_, index) => index <= halfLength);
-  }
+  const [gameEnd, setGameEnd] = useState<string>("");
 
   const getDepth = () => {
     if (difficulty === "easy") {
@@ -56,7 +28,7 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
     } else if (difficulty === "medium") {
       return getRandomInt(2, 4);
     } else {
-      return getRandomInt(3, 7);
+      return getRandomInt(2, 7);
     }
   };
 
@@ -85,15 +57,48 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
       const chessboard = new Chess(gameFen);
       if (playerMove && chessboard.moves().includes(playerMove)) {
         playerMove && chessboard.move(playerMove, { strict: false });
-        const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+        if (chessboard.isDraw()) {
+          setGameEnd("Draw");
+        }
+        if (chessboard.isStalemate()) {
+          setGameEnd("Stalemate");
+        }
+        if (chessboard.isCheckmate()) {
+          setGameEnd("Win");
+        }
         setGameFen(chessboard.fen().toString());
-        const randomMoveChance = getRandomInt(1, 5);
-        if (randomMoveChance === 5) {
-          console.log("random");
-          chessboard.move(fullMoveOptionList[0], { strict: false });
-          setGameFen(chessboard.fen().toString());
-        } else {
-          setRunEngine(true);
+
+        if (difficulty === "easy") {
+          const randomMoveChance = getRandomInt(1, 5);
+          if (randomMoveChance === 5) {
+            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+            chessboard.move(fullMoveOptionList[0], { strict: false });
+            setGameFen(chessboard.fen().toString());
+          } else {
+            setRunEngine(true);
+          }
+        }
+
+        if (difficulty === "medium") {
+          const randomMoveChance = getRandomInt(1, 8);
+          if (randomMoveChance === 8) {
+            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+            chessboard.move(fullMoveOptionList[0], { strict: false });
+            setGameFen(chessboard.fen().toString());
+          } else {
+            setRunEngine(true);
+          }
+        }
+
+        if (difficulty === "hard") {
+          const randomMoveChance = getRandomInt(1, 12);
+          if (randomMoveChance === 12) {
+            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+            chessboard.move(fullMoveOptionList[0], { strict: false });
+            setGameFen(chessboard.fen().toString());
+          } else {
+            setRunEngine(true);
+          }
         }
       } else {
         setError("Invalid Move. Please try again.");
@@ -111,6 +116,15 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
     const chessboard = new Chess(gameFen);
     if (engineResponse) {
       chessboard.move(engineResponse.san, { strict: false });
+      if (chessboard.isDraw()) {
+        setGameEnd("Draw");
+      }
+      if (chessboard.isStalemate()) {
+        setGameEnd("Stalemate");
+      }
+      if (chessboard.isCheckmate()) {
+        setGameEnd("Loss");
+      }
       setGameFen(chessboard.fen().toString());
     }
   }, [engineResponse]);
@@ -121,20 +135,46 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
         Engine Response: {loading && <span>Response Loading...</span>}{" "}
         {engineResponse && !loading && engineResponse.san}
       </div>
-      <div className="content-center justify-center p-2 text-center">
-        <input
-          id="moveSubmission"
-          type="text"
-          className="bg-violet-950 p-3 rounded-sm"
-          placeholder="Player move..."
-        ></input>
-        <button
-          className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
-          onClick={submitMove}
-        >
-          Submit move
-        </button>
-      </div>
+      {gameEnd == "" && (
+        <div className="content-center justify-center p-2 text-center">
+          <input
+            id="moveSubmission"
+            type="text"
+            className="bg-violet-950 p-3 rounded-sm"
+            placeholder="Player move..."
+          ></input>
+          <button
+            className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
+            onClick={submitMove}
+          >
+            Submit move
+          </button>
+        </div>
+      )}
+      {gameEnd == "Draw" && (
+        <div className="content-center justify-center p-2 text-center">
+          <div className="text-center text-2xl mx-40 pb-4">Game Drawn</div>
+        </div>
+      )}
+      {gameEnd == "Stalemate" && (
+        <div className="content-center justify-center p-2 text-center">
+          <div className="text-center text-2xl mx-40 pb-4">Stalemate</div>
+        </div>
+      )}
+      {gameEnd == "Win" && (
+        <div className="content-center justify-center p-2 text-center">
+          <div className="text-center text-2xl mx-40 pb-4">
+            Win by checkmate
+          </div>
+        </div>
+      )}
+      {gameEnd == "Win" && (
+        <div className="content-center justify-center p-2 text-center">
+          <div className="text-center text-2xl mx-40 pb-4">
+            Lose by checkmate
+          </div>
+        </div>
+      )}
       <div className="p-2 text-center text-amber-400">{error}</div>
       <div className="content-center justify-center p-2 text-center">
         <button

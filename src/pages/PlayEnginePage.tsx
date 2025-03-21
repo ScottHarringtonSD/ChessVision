@@ -19,32 +19,32 @@ const PlayEnginePage = () => {
           <div className="p-4 text-center ">
             <span className="p-2">
               <button
-                className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
+                className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
                 onClick={() => {
                   setDifficulty("easy");
                 }}
               >
-                Easy (ELO ~ 1200)
+                Intermediate
               </button>
             </span>
             <span className="p-2">
               <button
-                className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
+                className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
                 onClick={() => {
                   setDifficulty("medium");
                 }}
               >
-                Medium (ELO ~ 1500)
+                Advanced
               </button>
             </span>
             <span className="p-2">
               <button
-                className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
+                className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
                 onClick={() => {
                   setDifficulty("hard");
                 }}
               >
-                Hard (ELO ~ 2000)
+                Master
               </button>
             </span>
           </div>
