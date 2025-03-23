@@ -1,7 +1,6 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { postChessApi } from "../../api/queries";
 import { StockfishResponse } from "../../api/StockfishResponse";
-import { text } from "stream/consumers";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { getRandomInt, shuffle } from "./helper";
@@ -15,12 +14,14 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
   const [loading, setLoading] = useState(false);
   const [gameFen, setGameFen] = useState(
     "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+    //"rnbqkbnr/ppppp2p/8/5pp1/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"
+    //"rnbqkbnr/pppp1ppp/8/4p3/5P2/8/PPPPP1PP/RNBQKBNR w KQkq - 0 2"
   );
   const [runEngine, setRunEngine] = useState(false);
   const [error, setError] = useState("");
   const [showBoard, setShowBoard] = useState(false);
-  const [moveOptionList, setMoveOptionList] = useState<string[]>();
   const [gameEnd, setGameEnd] = useState<string>("");
+  const [engineMove, setEngineMove] = useState("");
 
   const getDepth = () => {
     if (difficulty === "easy") {
@@ -57,47 +58,47 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
       const chessboard = new Chess(gameFen);
       if (playerMove && chessboard.moves().includes(playerMove)) {
         playerMove && chessboard.move(playerMove, { strict: false });
+        (moveInput as HTMLInputElement).value = "";
         if (chessboard.isDraw()) {
           setGameEnd("Draw");
-        }
-        if (chessboard.isStalemate()) {
+        } else if (chessboard.isStalemate()) {
           setGameEnd("Stalemate");
-        }
-        if (chessboard.isCheckmate()) {
+        } else if (chessboard.isCheckmate()) {
           setGameEnd("Win");
-        }
-        setGameFen(chessboard.fen().toString());
-
-        if (difficulty === "easy") {
-          const randomMoveChance = getRandomInt(1, 5);
-          if (randomMoveChance === 5) {
-            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
-            chessboard.move(fullMoveOptionList[0], { strict: false });
-            setGameFen(chessboard.fen().toString());
-          } else {
-            setRunEngine(true);
+        } else {
+          setGameFen(chessboard.fen().toString());
+          if (difficulty === "easy") {
+            const randomMoveChance = getRandomInt(1, 5);
+            if (randomMoveChance === 5) {
+              const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+              chessboard.move(fullMoveOptionList[0], { strict: false });
+              setGameFen(chessboard.fen().toString());
+              setEngineMove(fullMoveOptionList[0]);
+            } else {
+              setRunEngine(true);
+            }
           }
-        }
 
-        if (difficulty === "medium") {
-          const randomMoveChance = getRandomInt(1, 8);
-          if (randomMoveChance === 8) {
-            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
-            chessboard.move(fullMoveOptionList[0], { strict: false });
-            setGameFen(chessboard.fen().toString());
-          } else {
-            setRunEngine(true);
+          if (difficulty === "medium") {
+            const randomMoveChance = getRandomInt(1, 8);
+            if (randomMoveChance === 8) {
+              const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+              chessboard.move(fullMoveOptionList[0], { strict: false });
+              setGameFen(chessboard.fen().toString());
+            } else {
+              setRunEngine(true);
+            }
           }
-        }
 
-        if (difficulty === "hard") {
-          const randomMoveChance = getRandomInt(1, 12);
-          if (randomMoveChance === 12) {
-            const fullMoveOptionList: string[] = shuffle(chessboard.moves());
-            chessboard.move(fullMoveOptionList[0], { strict: false });
-            setGameFen(chessboard.fen().toString());
-          } else {
-            setRunEngine(true);
+          if (difficulty === "hard") {
+            const randomMoveChance = getRandomInt(1, 12);
+            if (randomMoveChance === 12) {
+              const fullMoveOptionList: string[] = shuffle(chessboard.moves());
+              chessboard.move(fullMoveOptionList[0], { strict: false });
+              setGameFen(chessboard.fen().toString());
+            } else {
+              setRunEngine(true);
+            }
           }
         }
       } else {
@@ -126,6 +127,7 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
         setGameEnd("Loss");
       }
       setGameFen(chessboard.fen().toString());
+      setEngineMove(engineResponse.san);
     }
   }, [engineResponse]);
 
@@ -133,9 +135,9 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
     <>
       <div className="text-center p-2 text-2xl">
         Engine Response: {loading && <span>Response Loading...</span>}{" "}
-        {engineResponse && !loading && engineResponse.san}
+        {engineMove && !loading && engineMove}
       </div>
-      {gameEnd == "" && (
+      {gameEnd === "" && (
         <div className="content-center justify-center p-2 text-center">
           <input
             id="moveSubmission"
@@ -151,24 +153,24 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
           </button>
         </div>
       )}
-      {gameEnd == "Draw" && (
+      {gameEnd === "Draw" && (
         <div className="content-center justify-center p-2 text-center">
           <div className="text-center text-2xl mx-40 pb-4">Game Drawn</div>
         </div>
       )}
-      {gameEnd == "Stalemate" && (
+      {gameEnd === "Stalemate" && (
         <div className="content-center justify-center p-2 text-center">
           <div className="text-center text-2xl mx-40 pb-4">Stalemate</div>
         </div>
       )}
-      {gameEnd == "Win" && (
+      {gameEnd === "Win" && (
         <div className="content-center justify-center p-2 text-center">
           <div className="text-center text-2xl mx-40 pb-4">
             Win by checkmate
           </div>
         </div>
       )}
-      {gameEnd == "Win" && (
+      {gameEnd === "Loss" && (
         <div className="content-center justify-center p-2 text-center">
           <div className="text-center text-2xl mx-40 pb-4">
             Lose by checkmate
@@ -184,6 +186,24 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
           }}
         >
           {!showBoard ? "Show Board" : "Hide Board"}
+        </button>
+        <button
+          className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
+          onClick={() => {
+            setGameFen(
+              "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+            );
+            setError("");
+            setGameEnd("");
+            setShowBoard(false);
+            setEngineMove("");
+            const moveInput = document.getElementById("moveSubmission");
+            if (moveInput) {
+              (moveInput as HTMLInputElement).value = "";
+            }
+          }}
+        >
+          Restart
         </button>
         <div className="content-center justify-center items-center justify-items-center overflow-hidden">
           {showBoard && (
