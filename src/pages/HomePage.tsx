@@ -27,7 +27,7 @@ function HomePage() {
         <div className="text-center">
           <h1 className="text-9xl text-emerald-50">Chess Vision</h1>
           <p className="text-4xl text-emerald-50 p-2">
-            The blindfold chess training Mecca
+            The ultimate blindofld chess training site
           </p>
         </div>
       </div>

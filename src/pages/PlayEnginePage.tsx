@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useState } from "react";
-import PlayerInterface from "./PlayEngineComponents/PlayerInterface";
+import { useState } from "react";
+import PlayerInterface from "../components/PlayerInterface";
 
 const PlayEnginePage = () => {
   const [difficulty, setDifficulty] = useState<string>();
+  const [colour, setColour] = useState<string>();
 
   return (
     <div className="">
@@ -50,7 +51,40 @@ const PlayEnginePage = () => {
           </div>
         </div>
       )}
-      {difficulty && <PlayerInterface difficulty={difficulty} />}
+      {difficulty && !colour && (
+        <div>
+          <div className="text-3xl text-center"> Choose colour</div>
+          <div className="p-4 text-center ">
+            <span className="p-2">
+              <button
+                className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
+                onClick={() => {
+                  setColour("w");
+                }}
+              >
+                White
+              </button>
+            </span>
+            <span className="p-2">
+              <button
+                className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
+                onClick={() => {
+                  setColour("b");
+                }}
+              >
+                Black
+              </button>
+            </span>
+          </div>
+        </div>
+      )}
+      {difficulty && colour && (
+        <PlayerInterface
+          difficulty={difficulty}
+          startFEN={"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"}
+          startColour={colour}
+        />
+      )}
     </div>
   );
 };

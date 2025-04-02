@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
-import { postChessApi } from "../../api/queries";
-import { StockfishResponse } from "../../api/StockfishResponse";
+import { postChessApi } from "../api/queries";
+import { StockfishResponse } from "../api/StockfishResponse";
 import { Chess } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { getRandomInt, shuffle } from "./helper";
 
 export type PlayerInterfaceProps = {
   difficulty: string;
+  startFEN: string;
+  startColour?: string | undefined;
 };
 
-const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
+const PlayerInterface = ({
+  difficulty,
+  startFEN,
+  startColour,
+}: PlayerInterfaceProps) => {
   const [engineResponse, setEngineResponse] = useState<StockfishResponse>();
   const [loading, setLoading] = useState(false);
-  const [gameFen, setGameFen] = useState(
-    "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-    //"rnbqkbnr/ppppp2p/8/5pp1/3PP3/8/PPP2PPP/RNBQKBNR w KQkq - 0 3"
-    //"rnbqkbnr/pppp1ppp/8/4p3/5P2/8/PPPPP1PP/RNBQKBNR w KQkq - 0 2"
-  );
+  const [gameFen, setGameFen] = useState(startFEN);
   const [runEngine, setRunEngine] = useState(false);
   const [error, setError] = useState("");
   const [showBoard, setShowBoard] = useState(false);
   const [gameEnd, setGameEnd] = useState<string>("");
   const [engineMove, setEngineMove] = useState("");
+  const [playerColour, setPlayerColour] = useState<string | undefined>(
+    startColour
+  );
 
   const getDepth = () => {
     if (difficulty === "easy") {
       return getRandomInt(2, 2);
     } else if (difficulty === "medium") {
       return getRandomInt(2, 4);
-    } else {
+    } else if (difficulty === "hard") {
       return getRandomInt(2, 7);
+    } else {
+      return 12;
     }
   };
 
@@ -100,12 +107,20 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
               setRunEngine(true);
             }
           }
+          if (difficulty === "engine") {
+            setRunEngine(true);
+          }
         }
       } else {
         setError("Invalid Move. Please try again.");
       }
     }
   };
+
+  if (playerColour == "b") {
+    setPlayerColour("");
+    loadEngineResponse();
+  }
 
   useEffect(() => {
     if (runEngine) {
@@ -131,10 +146,21 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
     }
   }, [engineResponse]);
 
+  useEffect(() => {
+    setGameFen(startFEN);
+    setError("");
+    setGameEnd("");
+    setEngineMove("");
+    const moveInput = document.getElementById("moveSubmission");
+    if (moveInput) {
+      (moveInput as HTMLInputElement).value = "";
+    }
+  }, [startFEN]);
+
   return (
     <>
       <div className="text-center p-2 text-2xl">
-        Engine Response: {loading && <span>Response Loading...</span>}{" "}
+        Engine Move: {loading && <span>Response Loading...</span>}{" "}
         {engineMove && !loading && engineMove}
       </div>
       {gameEnd === "" && (
@@ -144,6 +170,11 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
             type="text"
             className="bg-violet-950 p-3 rounded-sm"
             placeholder="Player move..."
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                submitMove();
+              }
+            }}
           ></input>
           <button
             className="rounded-sm bg-emerald-800 text-center p-3 mx-3"
@@ -190,9 +221,7 @@ const PlayerInterface = ({ difficulty }: PlayerInterfaceProps) => {
         <button
           className="rounded-sm bg-emerald-800 text-center p-3 mx-3 w-28"
           onClick={() => {
-            setGameFen(
-              "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
-            );
+            setGameFen(startFEN);
             setError("");
             setGameEnd("");
             setShowBoard(false);

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
 import "./App.css";
 import {
   BrowserRouter as Router,
@@ -9,6 +8,8 @@ import {
 } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import PlayEnginePage from "./pages/PlayEnginePage";
+import CheckmatePuzzlesPage from "./pages/CheckmatePuzzlesPage";
+import { PuzzleFiles } from "./components/PuzzleFiles";
 
 function App() {
   return (
@@ -27,6 +28,12 @@ function App() {
               >
                 Play the Engine
               </NavLink>
+              <NavLink
+                to="/CheckmatePuzzles"
+                className="hover:opacity-60 text-l text-right "
+              >
+                Checkmate Puzzles
+              </NavLink>
             </div>
           </div>
         </header>
@@ -38,6 +45,10 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/PlayEngine" element={<PlayEnginePage />} />
+              <Route
+                path="/CheckmatePuzzles"
+                element={<CheckmatePuzzlesPage puzzles={PuzzleFiles} />}
+              />
             </Routes>
           </div>
         </div>

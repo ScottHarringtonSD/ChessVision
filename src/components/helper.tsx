@@ -22,3 +22,9 @@ export function shuffle(array: string[]) {
 
   return array;
 }
+
+export const getTurnFromFEN = (fen: string) => {
+  const fenParts = fen.split(" ");
+  const turn = fenParts[1];
+  return turn;
+};
