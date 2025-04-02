@@ -54,7 +54,7 @@ const PlayerInterface = ({
       setLoading(false);
       setRunEngine(false);
     }
-  }, [gameFen]);
+  }, [gameFen, difficulty]);
 
   const submitMove = () => {
     const moveInput = document.getElementById("moveSubmission");
