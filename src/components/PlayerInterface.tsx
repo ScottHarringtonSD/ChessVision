@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { postChessApi } from "../api/queries";
 import { StockfishResponse } from "../api/StockfishResponse";
 import { Chess } from "chess.js";
@@ -40,7 +40,7 @@ const PlayerInterface = ({
     }
   };
 
-  const loadEngineResponse = async () => {
+  const loadEngineResponse = useCallback(async () => {
     setLoading(true);
     try {
       const data = await postChessApi({
@@ -55,7 +55,7 @@ const PlayerInterface = ({
       setLoading(false);
       setRunEngine(false);
     }
-  };
+  }, [gameFen, getDepth]);
 
   const submitMove = () => {
     const moveInput = document.getElementById("moveSubmission");
@@ -126,7 +126,7 @@ const PlayerInterface = ({
     if (runEngine) {
       loadEngineResponse();
     }
-  }, [runEngine]);
+  }, [runEngine, loadEngineResponse]);
 
   useEffect(() => {
     const chessboard = new Chess(gameFen);
