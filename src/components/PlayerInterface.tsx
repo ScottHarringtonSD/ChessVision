@@ -126,7 +126,7 @@ const PlayerInterface = ({
     if (runEngine) {
       loadEngineResponse();
     }
-  }, [runEngine, loadEngineResponse]);
+  }, [runEngine]);
 
   useEffect(() => {
     const chessboard = new Chess(gameFen);
