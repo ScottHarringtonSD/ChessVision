@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import PlayerInterface from "../components/PlayerInterface";
 import { Puzzle } from "../components/Puzzle";
 import { getRandomInt, getTurnFromFEN } from "../components/helper";
@@ -19,7 +19,7 @@ const CheckmatePuzzlesPage = ({ puzzles }: CheckMatePuzzlesPageProps) => {
 
   useLayoutEffect(() => {
     randomizePuzzle();
-  }, []);
+  });
 
   return (
     <div className="text-center">

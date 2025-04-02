@@ -1,7 +1,4 @@
-import React from "react";
 import { StockfishResponse } from "./StockfishResponse";
-
-const baseUrl = "https://chess-api.com/v1";
 
 function translateStatusToErrorMessage(status: number) {
   switch (status) {

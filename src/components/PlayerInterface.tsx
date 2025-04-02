@@ -117,7 +117,7 @@ const PlayerInterface = ({
     }
   };
 
-  if (playerColour == "b") {
+  if (playerColour === "b") {
     setPlayerColour("");
     loadEngineResponse();
   }
@@ -126,7 +126,7 @@ const PlayerInterface = ({
     if (runEngine) {
       loadEngineResponse();
     }
-  }, [runEngine]);
+  }, [runEngine, loadEngineResponse]);
 
   useEffect(() => {
     const chessboard = new Chess(gameFen);
@@ -144,7 +144,7 @@ const PlayerInterface = ({
       setGameFen(chessboard.fen().toString());
       setEngineMove(engineResponse.san);
     }
-  }, [engineResponse]);
+  }, [engineResponse, gameFen]);
 
   useEffect(() => {
     setGameFen(startFEN);
