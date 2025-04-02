@@ -28,20 +28,19 @@ const PlayerInterface = ({
     startColour
   );
 
-  const getDepth = () => {
-    if (difficulty === "easy") {
-      return getRandomInt(2, 2);
-    } else if (difficulty === "medium") {
-      return getRandomInt(2, 4);
-    } else if (difficulty === "hard") {
-      return getRandomInt(2, 7);
-    } else {
-      return 12;
-    }
-  };
-
   const loadEngineResponse = useCallback(async () => {
     setLoading(true);
+    const getDepth = () => {
+      if (difficulty === "easy") {
+        return getRandomInt(2, 2);
+      } else if (difficulty === "medium") {
+        return getRandomInt(2, 4);
+      } else if (difficulty === "hard") {
+        return getRandomInt(2, 7);
+      } else {
+        return 12;
+      }
+    };
     try {
       const data = await postChessApi({
         fen: gameFen,
@@ -55,7 +54,7 @@ const PlayerInterface = ({
       setLoading(false);
       setRunEngine(false);
     }
-  }, [gameFen, getDepth]);
+  }, [gameFen]);
 
   const submitMove = () => {
     const moveInput = document.getElementById("moveSubmission");
