@@ -143,7 +143,7 @@ const PlayerInterface = ({
       setGameFen(chessboard.fen().toString());
       setEngineMove(engineResponse.san);
     }
-  }, [engineResponse, gameFen]);
+  }, [engineResponse]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setGameFen(startFEN);
