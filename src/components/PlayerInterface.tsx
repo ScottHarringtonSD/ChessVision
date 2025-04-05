@@ -66,10 +66,13 @@ const PlayerInterface = ({
         playerMove && chessboard.move(playerMove, { strict: false });
         (moveInput as HTMLInputElement).value = "";
         if (chessboard.isDraw()) {
+          setGameFen(chessboard.fen().toString());
           setGameEnd("Draw");
         } else if (chessboard.isStalemate()) {
+          setGameFen(chessboard.fen().toString());
           setGameEnd("Stalemate");
         } else if (chessboard.isCheckmate()) {
+          setGameFen(chessboard.fen().toString());
           setGameEnd("Win");
         } else {
           setGameFen(chessboard.fen().toString());
@@ -132,12 +135,15 @@ const PlayerInterface = ({
     if (engineResponse) {
       chessboard.move(engineResponse.san, { strict: false });
       if (chessboard.isDraw()) {
+        setGameFen(chessboard.fen().toString());
         setGameEnd("Draw");
       }
       if (chessboard.isStalemate()) {
+        setGameFen(chessboard.fen().toString());
         setGameEnd("Stalemate");
       }
       if (chessboard.isCheckmate()) {
+        setGameFen(chessboard.fen().toString());
         setGameEnd("Loss");
       }
       setGameFen(chessboard.fen().toString());
